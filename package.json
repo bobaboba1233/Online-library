@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.4",
+    "git": "^0.1.5",
+    "lucide-react": "^0.294.0",
+    "npm": "^11.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.1"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
