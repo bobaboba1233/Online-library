@@ -36,7 +36,9 @@ function LibraryLayout() {
       {/* Header */}
       <div className="header">
         <div className="header-left">
-          <img src="/logo-book.png" alt="logo" className="w-8 h-8" />
+          <a href="/" className="logo-link">
+            <img src="/logo-book.png" alt="logo" className="w-8 h-8" />
+          </a>
           <h1 className="text-2xl font-semibold">Библиотека</h1>
         </div>
 
