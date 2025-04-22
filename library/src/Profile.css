@@ -1,0 +1,204 @@
+/* Profile.css */
+
+.profile-page {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: #2d3436;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  .profile-page h1 {
+    color: #0984e3;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-size: 2.4rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 0.8rem;
+  }
+  
+  .profile-page h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #0984e3, #74b9ff);
+    border-radius: 2px;
+  }
+  
+  .user-info {
+    background-color: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 2.5rem;
+    border: 1px solid #dfe6e9;
+  }
+  
+  .user-info p {
+    font-size: 1.1rem;
+    margin: 1rem 0;
+    padding: 0.8rem 1rem;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .user-info p strong {
+    min-width: 100px;
+    display: inline-block;
+    color: #0984e3;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #0984e3;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #dfe6e9;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border 0.3s;
+  }
+  
+  .form-group input:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #0984e3;
+    box-shadow: 0 0 0 2px rgba(9, 132, 227, 0.1);
+  }
+  
+  .form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .subscribe-btn {
+    background: linear-gradient(135deg, #0984e3, #74b9ff);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(9, 132, 227, 0.2);
+  }
+  
+  .edit-btn {
+    background: linear-gradient(135deg, #00b894, #55efc4);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 184, 148, 0.2);
+  }
+  
+  .save-btn {
+    background: linear-gradient(135deg, #00cec9, #81ecec);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 206, 201, 0.2);
+  }
+  
+  .subscribe-btn:hover,
+  .edit-btn:hover,
+  .save-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .subscribe-btn:active,
+  .edit-btn:active,
+  .save-btn:active {
+    transform: translateY(0);
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 900px) {
+    .profile-page {
+      margin: 2rem 1.5rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .profile-page {
+      padding: 1.5rem;
+      margin: 1.5rem;
+    }
+    
+    .profile-page h1 {
+      font-size: 2rem;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .action-buttons button {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .profile-page {
+      padding: 1.2rem;
+      margin: 1.2rem;
+    }
+    
+    .profile-page h1 {
+      font-size: 1.8rem;
+    }
+    
+    .user-info p {
+      flex-direction: column;
+    }
+    
+    .user-info p strong {
+      margin-bottom: 0.3rem;
+    }
+  }
+  
+  /* Анимации */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
