@@ -23,7 +23,7 @@ function BookDetails() {
           description: 'Один из самых загадочных и увлекательных романов XX века, сочетающий философскую глубину с острой сатирой.',
           rating: 4.8,
           pages: 384,
-          cover: 'https://avatars.mds.yandex.net/i?id=2610450d93695a2e83a85b16491213cd4b98bd64-12939114-images-thumbs&n=13',
+          cover: 'https://avatars.mds.yandex.net/i?id=147a51e9498289de1ab338662b4a40424189daf1-7564382-images-thumbs&n=13',
           price: 450,
           inStock: true
         },
