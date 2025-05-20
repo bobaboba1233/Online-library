@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
-
+import './authStyles.css';
 const AuthModal = ({ onClose, onLoginSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
 
