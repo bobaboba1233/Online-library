@@ -8,6 +8,7 @@ export default function Card({ book }) {
         <div className="book-details">
           <div className="book-title">{book.title}</div>
           <div className="book-author">{book.author}</div>
+          
         </div>
       </div>
       <div className="book-genre">{book.genre}</div>
