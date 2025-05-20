@@ -22,7 +22,8 @@ const RegisterForm = ({ onSwitch }) => {
         email: formData.email,
         password: formData.password
       });
-      onSwitch(); // Переключаем на форму входа после регистрации
+      setError('');
+      onSwitch(); // переключаем на логин
     } catch (err) {
       setError(err.response?.data?.message || 'Ошибка регистрации');
     }
@@ -32,59 +33,61 @@ const RegisterForm = ({ onSwitch }) => {
     <div className="auth-form">
       <h2>Регистрация</h2>
       {error && <div className="auth-error">{error}</div>}
-      
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Имя пользователя:</label>
           <input
             type="text"
             value={formData.username}
-            onChange={(e) => setFormData({...formData, username: e.target.value})}
+            onChange={(e) => {
+              setFormData({ ...formData, username: e.target.value });
+              setError('');
+            }}
             required
           />
         </div>
-        
         <div className="form-group">
           <label>Email:</label>
           <input
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            onChange={(e) => {
+              setFormData({ ...formData, email: e.target.value });
+              setError('');
+            }}
             required
           />
         </div>
-        
         <div className="form-group">
           <label>Пароль:</label>
           <input
             type="password"
             value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            onChange={(e) => {
+              setFormData({ ...formData, password: e.target.value });
+              setError('');
+            }}
             required
             minLength="6"
           />
         </div>
-        
         <div className="form-group">
           <label>Подтвердите пароль:</label>
           <input
             type="password"
             value={formData.confirmPassword}
-            onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+            onChange={(e) => {
+              setFormData({ ...formData, confirmPassword: e.target.value });
+              setError('');
+            }}
             required
           />
         </div>
-        
-        <button type="submit" className="auth-button">
-          Зарегистрироваться
-        </button>
+        <button type="submit" className="auth-button">Зарегистрироваться</button>
       </form>
-      
       <p className="auth-switch-text">
         Уже есть аккаунт?{' '}
-        <span className="auth-switch-link" onClick={onSwitch}>
-          Войти
-        </span>
+        <span className="auth-switch-link" onClick={onSwitch}>Войти</span>
       </p>
     </div>
   );

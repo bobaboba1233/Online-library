@@ -1,21 +1,25 @@
 const jwt = require('jsonwebtoken');
 
-const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  
-  if (!token) {
-    return res.status(403).json({ message: 'Authorization required' });
+exports.verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ message: 'Токен не предоставлен' });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: 'Invalid token' });
-    }
-    req.userId = decoded.userId;
-    next();
-  });
-};
+  const token = authHeader.split(' ')[1]; // Bearer token
 
-module.exports = {
-  verifyToken
+  if (!token) {
+    return res.status(401).json({ message: 'Токен отсутствует' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // убедись, что JWT_SECRET задан
+
+    req.userId = decoded.userId; // или как там у тебя называется поле
+
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Неверный токен' });
+  }
 };

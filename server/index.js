@@ -2,14 +2,18 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const authRoutes = require('./routes/auth');
+
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
-
+const authRoutes = require('./routes/auth');
 // Подключение к MongoDB
 async function connectToDatabase() {
   try {
@@ -32,6 +36,7 @@ connectToDatabase();
 
 app.use('/api/books', require('./routes/bookRoutes'));
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', require('./routes/admin'));
 // Обработка 404 для API
 app.use('/api/*', (req, res) => {
   res.status(404).json({ error: 'API endpoint not found' });

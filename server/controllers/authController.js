@@ -63,9 +63,31 @@ const getProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+const authMe = async (req, res) => {
+  try {
+    // Предполагается, что в middleware verifyToken кладётся req.userId
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: 'Нет авторизации' });
+    }
+
+    const user = await User.findById(userId).select('-password'); // без пароля
+
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error('Ошибка в authMe:', error);
+    res.status(500).json({ message: 'Ошибка сервера' });
+  }
+};
 
 module.exports = {
   register,
   login,
-  getProfile
+  getProfile,
+  authMe
 };

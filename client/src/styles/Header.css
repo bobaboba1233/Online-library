@@ -13,6 +13,74 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+
+
+.user-menu {
+  position: relative;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #3498db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border: 2px solid white;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-initials {
+  font-size: 1.2rem;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  min-width: 200px;
+  z-index: 100;
+}
+
+.dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 4px 0;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f5f5f5;
+}
+
+.user-email {
+  margin: 0 0 10px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+
+
 /* Логотип и бренд */
 .header__brand {
   display: flex;
@@ -36,7 +104,7 @@
   margin: 0;
   font-size: 1.6rem;
   font-weight: 700;
-  background: linear-gradient(90deg, #2c3e50 0%, #3498db 100%);
+  background: linear-gradient(90deg, #ee7505 0%, #f3c90d 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -44,11 +112,13 @@
 
 /* Поле поиска */
 .search {
+  margin-left: -9.5rem; /* сдвиг влево на 1.5rem */
+  max-width: 560px;     /* или как у тебя было */
+  width: 100%;
   display: flex;
   align-items: center;
-  width: 50%;
-  max-width: 600px;
   position: relative;
+  box-sizing: border-box;
 }
 
 .search__input {
@@ -100,7 +170,7 @@
 /* Кнопка входа */
 .auth-button {
   padding: 0.8rem 1.8rem;
-  background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+  background: linear-gradient(135deg, #ec7403 0%, #f3c90d 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -161,8 +231,9 @@
   }
 
   .search {
+    margin-left: 0; /* убрать сдвиг на узких экранах */
     width: 100%;
-    order: 3;
+    max-width: none;
   }
 
   .auth-button {
