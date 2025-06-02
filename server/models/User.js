@@ -20,12 +20,23 @@ const UserSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
+  subscription: {                  // ← новый вложенный объект
+    isActive: {
+      type: Boolean,
+      default: false
+    },
+    endDate: {
+      type: Date,
+      default: null
+    }
+  },
   createdAt: {
     type: Date,
     default: Date.now
   }
 });
 
+// Хеширование пароля перед сохранением
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   

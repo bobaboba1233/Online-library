@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const userRoutes = require('./routes/user');
 
 
 const app = express();
@@ -37,6 +38,8 @@ connectToDatabase();
 app.use('/api/books', require('./routes/bookRoutes'));
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/user', userRoutes);
+
 // Обработка 404 для API
 app.use('/api/*', (req, res) => {
   res.status(404).json({ error: 'API endpoint not found' });

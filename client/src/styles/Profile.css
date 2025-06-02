@@ -70,3 +70,19 @@
   font-size: 1.2rem;
   color: #666;
 }
+
+.subscribe-btn {
+  background: #ec7403;
+  color: white;
+  padding: 0.8rem 1.6rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 1rem; /* Отступ снизу для разделения с кнопкой "Выйти" */
+}
+
+.subscribe-btn:hover {
+  background: #d55c00;
+}

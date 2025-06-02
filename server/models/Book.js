@@ -43,17 +43,21 @@ const bookSchema = new mongoose.Schema({
     max: [5, 'Rating cannot exceed 5'],
     default: 0
   },
+  isSubscriptionOnly: {           // ← новое поле
+    type: Boolean,
+    default: false
+  },
+  description: {
+    type: String,
+    default: ''
+  },
   createdAt: {
     type: Date,
     default: Date.now
   }
 }, {
   collection: 'books',
-  autoIndex: true // Автоматическое создание индексов
+  autoIndex: true
 });
 
-// Создаем модель, которая автоматически создаст коллекцию
-const Book = mongoose.model('Book', bookSchema);
-
-
-module.exports = Book;
+module.exports = mongoose.model('Book', bookSchema);
