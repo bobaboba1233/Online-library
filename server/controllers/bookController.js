@@ -2,7 +2,13 @@ const Book = require('../models/Book');
 
 exports.createBook = async (req, res) => {
   try {
-    const newBook = new Book(req.body);
+    const { isSubscriptionOnly, ...otherData } = req.body;
+
+    const newBook = new Book({
+      ...otherData,
+      isSubscriptionOnly: Boolean(isSubscriptionOnly),
+    });
+
     const savedBook = await newBook.save();
     res.status(201).json(savedBook);
   } catch (error) {
@@ -28,6 +34,7 @@ exports.getBookById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 exports.updateBook = async (req, res) => {
   try {
     const updatedData = {
@@ -35,7 +42,10 @@ exports.updateBook = async (req, res) => {
       year: Number(req.body.year),
       pages: Number(req.body.pages),
       price: Number(req.body.price),
-      rating: Number(req.body.rating)
+      rating: Number(req.body.rating),
+      ...(req.body.isSubscriptionOnly !== undefined && {
+        isSubscriptionOnly: Boolean(req.body.isSubscriptionOnly),
+      }),
     };
 
     const updatedBook = await Book.findByIdAndUpdate(
@@ -43,6 +53,11 @@ exports.updateBook = async (req, res) => {
       updatedData,
       { new: true, runValidators: true }
     );
+
+    if (!updatedBook) {
+      return res.status(404).json({ message: 'Книга не найдена' });
+    }
+
     res.json(updatedBook);
   } catch (error) {
     res.status(400).json({ message: error.message });

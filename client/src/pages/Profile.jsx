@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../styles/Profile.css';  // Не забудь обновить стили
-import Header from '../components/Header';   // Импортируй Header, если используешь
+import '../styles/Profile.css';
+import Header from '../components/Header';
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [subscribing, setSubscribing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,11 +40,37 @@ const Profile = () => {
     navigate('/');
   };
 
+  const handleSubscribe = async () => {
+    if (subscribing) return;
+    setSubscribing(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'http://localhost:5000/api/user/subscribe',
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      // Обновляем данные пользователя в состоянии
+      setUserData(prev => ({
+        ...prev,
+        subscription: response.data.subscription
+      }));
+    } catch (error) {
+      console.error('Ошибка оформления подписки:', error);
+      alert('Не удалось оформить подписку');
+    } finally {
+      setSubscribing(false);
+    }
+  };
+
   if (loading) return <div className="loading">Загрузка...</div>;
 
   return (
     <>
-      <Header /> {/* Шапка сайта сверху, если у тебя есть такой компонент */}
+      <Header />
 
       <div className="profile-container">
         <div className="profile-card">
@@ -54,20 +81,43 @@ const Profile = () => {
           <h2>Мой профиль</h2>
 
           {userData && (
-            <div className="profile-info">
-              <div className="profile-avatar">
-                <img
-                  src={userData.avatar || '/default-avatar.png'}
-                  alt="Аватар"
-                />
+            <>
+              <div className="profile-info">
+                <div className="profile-avatar">
+                  <img
+                    src={userData.avatar || '/default-avatar.png'}
+                    alt="Аватар"
+                  />
+                </div>
+
+                <div className="profile-details">
+                  <p><strong>Имя:</strong> {userData.username}</p>
+                  <p><strong>Email:</strong> {userData.email}</p>
+                  <p>
+                    <strong>Дата регистрации:</strong>{' '}
+                    {new Date(userData.createdAt).toLocaleDateString()}
+                  </p>
+                  <p>
+                    <strong>Подписка:</strong>{' '}
+                    {userData.subscription && userData.subscription.isActive ? (
+                      <>Активна до {new Date(userData.subscription.endDate).toLocaleDateString()}</>
+                    ) : (
+                      'Не оформлена'
+                    )}
+                  </p>
+                </div>
               </div>
 
-              <div className="profile-details">
-                <p><strong>Имя:</strong> {userData.username}</p>
-                <p><strong>Email:</strong> {userData.email}</p>
-                <p><strong>Дата регистрации:</strong> {new Date(userData.createdAt).toLocaleDateString()}</p>
-              </div>
-            </div>
+              {!userData.subscription?.isActive && (
+                <button
+                  onClick={handleSubscribe}
+                  className="subscribe-btn"
+                  disabled={subscribing}
+                >
+                  {subscribing ? 'Оформление...' : 'Оформить подписку'}
+                </button>
+              )}
+            </>
           )}
 
           <button onClick={handleLogout} className="logout-btn">

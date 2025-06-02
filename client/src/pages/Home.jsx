@@ -1,32 +1,48 @@
 import React, { useState, useEffect, Suspense } from "react";
 import Card from "../components/Card";
-import { Link } from "react-router-dom";
+import axios from "axios";
 import "../styles/Home.css";
-import Header from "../components/Header"; // Импортируем новый Header
+import Header from "../components/Header";
 const AuthModal = React.lazy(() => import("../components/Auth/AuthModal"));
 
 function Home() {
   const [books, setBooks] = useState([]);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    const fetchBooksAndUser = async () => {
       try {
-        const response = await fetch(
+        // Параллельный запрос книг и данных пользователя (если есть токен)
+        const token = localStorage.getItem("token");
+
+        const booksPromise = axios.get(
           `http://localhost:5000/api/books?search=${encodeURIComponent(searchQuery)}`
         );
-        if (!response.ok) throw new Error("Ошибка загрузки");
-        setBooks(await response.json());
+
+        let userPromise = Promise.resolve(null);
+        if (token) {
+          userPromise = axios.get("http://localhost:5000/api/auth/profile", {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+        }
+
+        const [booksRes, userRes] = await Promise.all([booksPromise, userPromise]);
+        setBooks(booksRes.data);
+        if (userRes) {
+          setUserData(userRes.data);
+        }
       } catch (err) {
-        setError(err.message);
+        setError(err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchBooks();
+
+    fetchBooksAndUser();
   }, [searchQuery]);
 
   if (loading) return <div className="loading">Загрузка...</div>;
@@ -34,26 +50,25 @@ function Home() {
 
   return (
     <div className="home">
-      {/* Используем новый Header компонент */}
-      <Header 
+      <Header
         searchQuery={searchQuery}
         onSearchChange={(e) => setSearchQuery(e.target.value)}
         onAuthClick={() => setShowAuthModal(true)}
       />
 
-      {/* Auth Modal */}
       {showAuthModal && (
         <Suspense fallback={<div>Загрузка...</div>}>
           <AuthModal onClose={() => setShowAuthModal(false)} />
         </Suspense>
       )}
 
-      {/* Book List */}
       <div className="book-list">
         {books.map((book) => (
-          <Link key={book._id} to={`/bookDetails/${book._id}`} className="book-link">
-            <Card book={book} />
-          </Link>
+          <Card
+            key={book._id}
+            book={book}
+            isSubscribed={userData?.subscription?.isActive || false}
+          />
         ))}
       </div>
     </div>

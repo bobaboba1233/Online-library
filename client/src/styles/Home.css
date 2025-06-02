@@ -60,7 +60,7 @@
 
 .book-search-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #d55c00;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
@@ -80,23 +80,6 @@
   border: 2px solid #ecf0f1;
 }
 
-.books-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1.5rem;
-  padding: 0.5rem;
-}
-
-.book-card-link {
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.2s ease;
-}
-
-.book-card-link:hover {
-  transform: translateY(-5px);
-}
-
 .loading,
 .error {
   text-align: center;
@@ -106,7 +89,7 @@
 }
 
 .error {
-  color: #e74c3c;
+  color: #e74c8c;
 }
 
 @media (max-width: 768px) {
@@ -120,7 +103,98 @@
     margin: 1rem 0;
   }
   
-  .books-container {
+  .book-list {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
+}
+
+/* Новый селектор для контейнера списка книг */
+.book-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 0.5rem;
+}
+
+/* Бейдж «Только для подписчиков» */
+.subscription-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #ffcc00;
+  color: #000;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+/* Карточка книги */
+.book-card {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* прижимаем содержимое влево */
+  gap: 8px;
+  background-color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Блок с обложкой и базовой инфой */
+.book-info {
+  display: flex;
+  align-items: flex-start; /* прижимаем картинку и текст к одному уровню сверху */
+  gap: 8px;
+  width: 100%;
+}
+
+/* Детали (название + автор) */
+.book-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+.book-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  text-align: left;
+}
+
+.book-author {
+  font-size: 0.95rem;
+  color: #555;
+  text-align: left;
+}
+
+/* Жанр */
+.book-genre {
+  font-size: 0.9rem;
+  color: #777;
+  text-align: left;
+  width: 100%;
+}
+
+/* Кнопка «Читать» */
+.read-button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #d55c00;
+  color: white;
+  cursor: pointer;
+}
+
+.read-button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
 }

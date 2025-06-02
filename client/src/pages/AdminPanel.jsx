@@ -14,7 +14,8 @@ const AdminPanel = () => {
     price: '',
     inStock: true,
     rating: 0,
-    description: ''
+    description: '',
+    isSubscriptionOnly: false // новое поле для подписки
   });
   const [preview, setPreview] = useState('');
   const [editingId, setEditingId] = useState(null);
@@ -38,17 +39,18 @@ const AdminPanel = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Преобразование данных перед отправкой
+      // Преобразование данных перед отправкой, включая isSubscriptionOnly
       const transformedData = {
         ...formData,
         year: Number(formData.year),
         pages: Number(formData.pages),
         price: Number(formData.price),
-        rating: Number(formData.rating)
+        rating: Number(formData.rating),
+        isSubscriptionOnly: Boolean(formData.isSubscriptionOnly)
       };
 
       const token = localStorage.getItem('adminToken');
-      
+
       if (editingId) {
         // Редактирование существующей книги
         const response = await axios.put(
@@ -60,10 +62,10 @@ const AdminPanel = () => {
             }
           }
         );
-        
-        // Непосредственное обновление состояния
-        setBooks(prevBooks => 
-          prevBooks.map(book => 
+
+        // Обновление списка в состоянии
+        setBooks(prevBooks =>
+          prevBooks.map(book =>
             book._id === editingId ? response.data : book
           )
         );
@@ -79,14 +81,13 @@ const AdminPanel = () => {
             }
           }
         );
-        
+
         // Добавление новой книги в состояние
         setBooks(prevBooks => [...prevBooks, response.data]);
         alert('Книга успешно добавлена!');
       }
-      
+
       resetForm();
-      
     } catch (error) {
       console.error('Ошибка:', error);
       alert(`Ошибка: ${error.response?.data?.message || error.message}`);
@@ -105,14 +106,15 @@ const AdminPanel = () => {
       price: book.price,
       inStock: book.inStock,
       rating: book.rating,
-      description: book.description || ''
+      description: book.description || '',
+      isSubscriptionOnly: book.isSubscriptionOnly || false
     });
     setPreview(book.cover);
     setEditingId(book._id);
     window.scrollTo(0, 0);
   };
 
- const handleDelete = async (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm('Вы уверены, что хотите удалить эту книгу?')) {
       try {
         const token = localStorage.getItem('adminToken');
@@ -124,9 +126,9 @@ const AdminPanel = () => {
             }
           }
         );
-        
-        // Непосредственное удаление из состояния
-        setBooks(prevBooks => 
+
+        // Удаляем книгу из состояния
+        setBooks(prevBooks =>
           prevBooks.filter(book => book._id !== id)
         );
         alert('Книга успешно удалена!');
@@ -148,7 +150,8 @@ const AdminPanel = () => {
       price: '',
       inStock: true,
       rating: 0,
-      description: ''
+      description: '',
+      isSubscriptionOnly: false
     });
     setPreview('');
     setEditingId(null);
@@ -170,7 +173,7 @@ const AdminPanel = () => {
     <div className="admin-panel">
       <h2>{editingId ? 'Редактировать книгу' : 'Добавить новую книгу'}</h2>
       <form onSubmit={handleSubmit} className="book-form">
-           {/* Превью обложки */}
+        {/* Превью обложки */}
         {preview && (
           <div className="cover-preview">
             <img src={preview} alt="Превью обложки" />
@@ -216,7 +219,7 @@ const AdminPanel = () => {
         <div className="form-group">
           <label>Ссылка на обложку:</label>
           <input
-            type="url"
+            type="text"
             name="cover"
             value={formData.cover}
             onChange={handleChange}
@@ -287,6 +290,19 @@ const AdminPanel = () => {
             В наличии
           </label>
         </div>
+
+        <div className="form-group checkbox-group">
+          <label>
+            <input
+              type="checkbox"
+              name="isSubscriptionOnly"
+              checked={formData.isSubscriptionOnly}
+              onChange={handleChange}
+            />
+            Только для подписки
+          </label>
+        </div>
+
         <div className="form-buttons">
           <button type="submit" className="submit-btn">
             {editingId ? 'Сохранить изменения' : 'Добавить книгу'}
@@ -308,6 +324,7 @@ const AdminPanel = () => {
             <span>Обложка</span>
             <span>Название</span>
             <span>Автор</span>
+            <span>Подписка</span>
             <span>Действия</span>
           </div>
           {books.map(book => (
@@ -317,14 +334,17 @@ const AdminPanel = () => {
               </div>
               <div className="book-title">{book.title}</div>
               <div className="book-author">{book.author}</div>
+              <div className="book-subscription-status">
+                {book.isSubscriptionOnly ? '✅ Да' : '—'}
+              </div>
               <div className="book-actions">
-                <button 
+                <button
                   className="edit-btn"
                   onClick={() => handleEdit(book)}
                 >
                   ✏️
                 </button>
-                <button 
+                <button
                   className="delete-btn"
                   onClick={() => handleDelete(book._id)}
                 >
