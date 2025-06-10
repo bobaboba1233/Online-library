@@ -4,23 +4,25 @@ const bcrypt = require('bcryptjs');
 const UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
+    required: [true, 'Username is required'],
     unique: true,
-    trim: true
+    trim: true,
+    minlength: 3
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Email is required'],
     unique: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    match: [/.+\@.+\..+/, 'Please enter a valid email']
   },
   password: {
     type: String,
-    required: true,
-    minlength: 6
+    required: [true, 'Password is required'],
+    minlength: [6, 'Password must be at least 6 characters']
   },
-  subscription: {                  // ← новый вложенный объект
+  subscription: {
     isActive: {
       type: Boolean,
       default: false
@@ -36,17 +38,20 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// Хеширование пароля перед сохранением
+// Хеширование пароля только при создании или изменении
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
   try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    this.password = await bcrypt.hash(this.password, 12);
     next();
   } catch (err) {
     next(err);
   }
 });
+
+// Создаем индексы при инициализации
+UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ username: 1 }, { unique: true });
 
 module.exports = mongoose.model('User', UserSchema);

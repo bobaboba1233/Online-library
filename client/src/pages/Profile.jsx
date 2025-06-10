@@ -8,7 +8,37 @@ const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [subscribing, setSubscribing] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [showPlans, setShowPlans] = useState(false);
   const navigate = useNavigate();
+
+  // Варианты подписок
+  const subscriptionPlans = [
+    {
+      id: 'month',
+      name: '1 месяц',
+      price: '299 ₽',
+      duration: 1,
+      description: 'Доступ ко всем книгам на 1 месяц',
+      popular: false
+    },
+    {
+      id: '3months',
+      name: '3 месяца',
+      price: '799 ₽',
+      duration: 3,
+      description: 'Экономия 15% по сравнению с помесячной оплатой',
+      popular: true
+    },
+    {
+      id: 'year',
+      name: '1 год',
+      price: '2 999 ₽',
+      duration: 12,
+      description: 'Экономия 30% по сравнению с помесячной оплатой',
+      popular: false
+    }
+  ];
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -41,28 +71,54 @@ const Profile = () => {
   };
 
   const handleSubscribe = async () => {
-    if (subscribing) return;
+    if (subscribing || !selectedPlan) return;
     setSubscribing(true);
 
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
         'http://localhost:5000/api/user/subscribe',
+        { duration: selectedPlan.duration },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      setUserData(prev => ({
+        ...prev,
+        subscription: response.data.subscription
+      }));
+      setShowPlans(false);
+      setSelectedPlan(null);
+    } catch (error) {
+      console.error('Ошибка оформления подписки:', error);
+      alert(error.response?.data?.message || 'Не удалось оформить подписку');
+    } finally {
+      setSubscribing(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!window.confirm('Вы уверены, что хотите отменить подписку?')) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        'http://localhost:5000/api/user/unsubscribe',
         {},
         {
           headers: { Authorization: `Bearer ${token}` }
         }
       );
-      // Обновляем данные пользователя в состоянии
+      
       setUserData(prev => ({
         ...prev,
-        subscription: response.data.subscription
+        subscription: { ...prev.subscription, isActive: false }
       }));
+      alert('Подписка успешно отменена');
     } catch (error) {
-      console.error('Ошибка оформления подписки:', error);
-      alert('Не удалось оформить подписку');
-    } finally {
-      setSubscribing(false);
+      console.error('Ошибка отмены подписки:', error);
+      alert(error.response?.data?.message || 'Не удалось отменить подписку');
     }
   };
 
@@ -99,23 +155,75 @@ const Profile = () => {
                   </p>
                   <p>
                     <strong>Подписка:</strong>{' '}
-                    {userData.subscription && userData.subscription.isActive ? (
-                      <>Активна до {new Date(userData.subscription.endDate).toLocaleDateString()}</>
+                    {userData.subscription?.isActive ? (
+                      <>
+                        <span className="active-badge">Активна</span> до {new Date(userData.subscription.endDate).toLocaleDateString()}
+                      </>
                     ) : (
-                      'Не оформлена'
+                      <span className="inactive-badge">Не активна</span>
                     )}
                   </p>
                 </div>
               </div>
 
-              {!userData.subscription?.isActive && (
+              {userData.subscription?.isActive ? (
                 <button
-                  onClick={handleSubscribe}
-                  className="subscribe-btn"
-                  disabled={subscribing}
+                  onClick={handleCancelSubscription}
+                  className="cancel-subscription-btn"
                 >
-                  {subscribing ? 'Оформление...' : 'Оформить подписку'}
+                  Отменить подписку
                 </button>
+              ) : (
+                <>
+                  {!showPlans ? (
+                    <button
+                      onClick={() => setShowPlans(true)}
+                      className="subscribe-btn"
+                    >
+                      Оформить подписку
+                    </button>
+                  ) : (
+                    <div className="subscription-plans">
+                      <h3>Выберите тариф</h3>
+                      <div className="plans-grid">
+                        {subscriptionPlans.map(plan => (
+                          <div 
+                            key={plan.id}
+                            className={`plan-card ${selectedPlan?.id === plan.id ? 'selected' : ''} ${plan.popular ? 'popular' : ''}`}
+                            onClick={() => setSelectedPlan(plan)}
+                          >
+                            {plan.popular && <div className="popular-badge">Выгодно</div>}
+                            <h4>{plan.name}</h4>
+                            <div className="plan-price">{plan.price}</div>
+                            <p className="plan-description">{plan.description}</p>
+                            {selectedPlan?.id === plan.id && (
+                              <div className="selected-check">✓</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="plan-actions">
+                        <button
+                          onClick={() => {
+                            setShowPlans(false);
+                            setSelectedPlan(null);
+                          }}
+                          className="cancel-plan-btn"
+                        >
+                          Назад
+                        </button>
+                        <button
+                          onClick={handleSubscribe}
+                          className="confirm-subscribe-btn"
+                          disabled={!selectedPlan || subscribing}
+                        >
+                          {subscribing ? 'Оформление...' : 'Подписаться'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}

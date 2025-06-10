@@ -73,30 +73,114 @@ exports.updateUserProfile = async (req, res) => {
   }
 };
 
-// Оформление подписки
+// Оформление подписки (с поддержкой разных сроков)
 exports.subscribeUser = async (req, res) => {
   try {
+    const { duration } = req.body; // Получаем duration (1, 3 или 12 месяцев)
     const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ message: 'Пользователь не найден' });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
 
-    // Устанавливаем дату окончания подписки через 30 дней
-    const now = new Date();
-    const endDate = new Date(now.setDate(now.getDate() + 30));
+    // Проверяем, что duration корректен
+    const allowedDurations = [1, 3, 12];
+    if (!allowedDurations.includes(duration)) {
+      return res.status(400).json({ message: 'Некорректная длительность подписки' });
+    }
 
+    // Рассчитываем дату окончания
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setMonth(endDate.getMonth() + duration);
+    endDate.setHours(0, 0, 0, 0);
+
+    // Обновляем подписку
     user.subscription = {
       isActive: true,
-      endDate
+      startDate,
+      endDate,
+      planDuration: duration // Сохраняем длительность для истории
     };
+
     await user.save();
 
     res.json({
-      message: 'Подписка успешно оформлена',
-      subscription: {
-        isActive: true,
-        endDate: user.subscription.endDate
-      }
+      message: `Подписка успешно оформлена на ${duration} ${getMonthText(duration)}`,
+      subscription: user.subscription
     });
   } catch (err) {
     res.status(500).json({ message: 'Ошибка при оформлении подписки', error: err.message });
+  }
+};
+
+// Вспомогательная функция для склонения "месяц/месяца/месяцев"
+function getMonthText(duration) {
+  if (duration === 1) return 'месяц';
+  if (duration >= 2 && duration <= 4) return 'месяца';
+  return 'месяцев';
+}
+// Новые функции для админ-панели
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await User.find({})
+      .select('-password')
+      .sort({ createdAt: -1 });
+    
+    res.json(users.map(user => ({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      createdAt: user.createdAt,
+      subscription: {
+        isActive: user.subscription?.isActive || false,
+        endDate: user.subscription?.endDate || null
+      }
+    })));
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Ошибка при получении списка пользователей',
+      error: error.message 
+    });
+  }
+};
+
+exports.updateUserSubscription = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isActive, months = 1 } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+
+    let endDate = null;
+    if (isActive) {
+      endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + months);
+    }
+
+    user.subscription = {
+      isActive,
+      endDate: isActive ? endDate : null
+    };
+
+    await user.save();
+
+    res.json({
+      message: `Подписка успешно ${isActive ? 'активирована' : 'деактивирована'}`,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        subscription: user.subscription
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Ошибка при обновлении подписки',
+      error: error.message 
+    });
   }
 };

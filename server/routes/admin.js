@@ -7,10 +7,17 @@ const {
   updateBook, 
   deleteBook 
 } = require('../controllers/bookController');
+const {
+  getUsers,
+  updateUserSubscription
+} = require('../controllers/userController');
 
 router.post('/login', adminLogin);
 router.post('/books', adminAuth, createBook);
 router.put('/books/:id', adminAuth, updateBook);
 router.delete('/books/:id', adminAuth, deleteBook);
 
-module.exports = router;
+// Работа с пользователями (только для админов)
+router.get('/users', adminAuth, getUsers);
+router.put('/users/:id/subscription', adminAuth, updateUserSubscription);
+module.exports = router;  

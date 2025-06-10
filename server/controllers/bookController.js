@@ -18,7 +18,22 @@ exports.createBook = async (req, res) => {
 
 exports.getAllBooks = async (req, res) => {
   try {
-    const books = await Book.find({});
+    const { search } = req.query;
+    
+    // Создаем базовый запрос
+    let query = {};
+    
+    // Если есть параметр поиска, добавляем условия
+      if (search && search.trim() !== '') {
+      query = {
+        $or: [
+          { title: { $regex: search, $options: 'i' } },
+          { author: { $regex: search, $options: 'i' } }
+        ]
+      };
+    }
+    
+    const books = await Book.find(query);
     res.json(books);
   } catch (err) {
     res.status(500).json({ error: err.message });
