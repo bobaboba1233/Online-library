@@ -4,7 +4,7 @@ exports.adminLogin = (req, res) => {
   const { login, password } = req.body;
   
   // Проверяем учетные данные
-  if (login !== "admin" || password !== "admin123") {
+  if (login !== process.env.ADMIN_LOGIN || password !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ message: 'Неверные учетные данные' });
   }
 
@@ -19,7 +19,7 @@ exports.adminLogin = (req, res) => {
     token,
     user: {
       isAdmin: true,
-      login: "admin"
+      login: process.env.ADMIN_LOGIN
     }
   });
 };

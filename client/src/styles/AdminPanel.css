@@ -132,7 +132,15 @@ input[type="checkbox"] {
   width: auto;
   margin-right: 0.5rem;
 }
-
+.book-form textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
 .checkbox-group {
   flex-direction: row;
   align-items: center;

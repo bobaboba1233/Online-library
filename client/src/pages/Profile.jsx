@@ -10,9 +10,12 @@ const Profile = () => {
   const [subscribing, setSubscribing] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showPlans, setShowPlans] = useState(false);
+  const [editingField, setEditingField] = useState(null);
+  const [editValue, setEditValue] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isAvatarUploading, setIsAvatarUploading] = useState(false);
   const navigate = useNavigate();
 
-  // Варианты подписок
   const subscriptionPlans = [
     {
       id: 'month',
@@ -122,11 +125,80 @@ const Profile = () => {
     }
   };
 
+  const startEditing = (field) => {
+    setEditingField(field);
+    setEditValue(userData[field]);
+  };
+
+  const cancelEditing = () => {
+    setEditingField(null);
+    setEditValue('');
+  };
+
+  const saveChanges = async () => {
+    if (!editValue.trim()) return;
+    
+    setIsUpdating(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(
+        'http://localhost:5000/api/user/profile',
+        { [editingField]: editValue },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      setUserData(response.data);
+      setEditingField(null);
+    } catch (error) {
+      console.error('Ошибка обновления профиля:', error);
+      alert(error.response?.data?.message || 'Не удалось обновить данные');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+const handleAvatarChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('avatar', file);
+
+  setIsAvatarUploading(true);
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.put(
+      'http://localhost:5000/api/user/avatar',
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+
+    setUserData(prev => ({
+      ...prev,
+      avatar: response.data.avatarUrl
+    }));
+  } catch (error) {
+    console.error('Ошибка загрузки аватара:', error);
+    alert(error.response?.data?.message || 'Не удалось обновить аватар');
+  } finally {
+    setIsAvatarUploading(false);
+  }
+};
   if (loading) return <div className="loading">Загрузка...</div>;
 
   return (
     <>
-      <Header />
+      <Header 
+        isLoggedIn={!!userData} 
+        userData={userData}
+        onAuthClick={() => navigate('/auth')}
+      />
 
       <div className="profile-container">
         <div className="profile-card">
@@ -140,15 +212,105 @@ const Profile = () => {
             <>
               <div className="profile-info">
                 <div className="profile-avatar">
+                <label className="avatar-upload-label">
+                  <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarChange}
+                      style={{ display: 'none' }}
+                    />
+                    <div className="avatar-overlay">
+                    {isAvatarUploading ? (
+                      <div className="uploading-spinner">...</div>
+                    ) : (
+                      <span>✏️</span>
+                    )}
+                  </div>
                   <img
-                    src={userData.avatar || '/default-avatar.png'}
-                    alt="Аватар"
-                  />
-                </div>
+                      src={userData.avatar ? `http://localhost:5000${userData.avatar}` : '/default-avatar.png'}
+                      alt="Аватар"
+                      className={isAvatarUploading ? 'uploading' : ''}
+                    />
+
+                </label>
+              </div>
 
                 <div className="profile-details">
-                  <p><strong>Имя:</strong> {userData.username}</p>
-                  <p><strong>Email:</strong> {userData.email}</p>
+                  <div className="profile-field">
+                    <strong>Имя:</strong>
+                    {editingField === 'username' ? (
+                      <div className="edit-field">
+                        <input
+                          type="text"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                        />
+                        <button 
+                          onClick={saveChanges} 
+                          disabled={isUpdating}
+                          className="save-btn-field"
+                        >
+                          {isUpdating ? '...' : '✓'}
+                        </button>
+                        <button 
+                          onClick={cancelEditing} 
+                          disabled={isUpdating}
+                          className="cancel-btn-field"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="field-value">
+                        {userData.username}
+                        <button 
+                          onClick={() => startEditing('username')} 
+                          className="edit-btn-field"
+                        >
+                          ✏️
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="profile-field">
+                    <strong>Email:</strong>
+                    {editingField === 'email' ? (
+                      <div className="edit-field-field">
+                        <input
+                          type="email"
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                        />
+                        <button 
+                          onClick={saveChanges} 
+                          disabled={isUpdating}
+                          className="save-btn-field"
+                        >
+                          {isUpdating ? '...' : '✓'}
+                        </button>
+                        <button 
+                          onClick={cancelEditing} 
+                          disabled={isUpdating}
+                          className="cancel-btn-field"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="field-value">
+                        {userData.email}
+                        <button 
+                          onClick={() => startEditing('email')} 
+                          className="edit-btn-field"
+                        >
+                          ✏️
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <p>
                     <strong>Дата регистрации:</strong>{' '}
                     {new Date(userData.createdAt).toLocaleDateString()}

@@ -1,5 +1,6 @@
 const User = require('../models/User');
-
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/avatars/' });
 // Получение профиля пользователя
 exports.getUserProfile = async (req, res) => {
   try {
@@ -30,6 +31,7 @@ exports.getUserProfile = async (req, res) => {
       id: user._id,
       username: user.username,
       email: user.email,
+      avatar: user.avatar,
       createdAt: user.createdAt,
       subscription: subscriptionStatus
     });
@@ -93,13 +95,14 @@ exports.subscribeUser = async (req, res) => {
     const startDate = new Date();
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + duration);
+    console.log(endDate);
     endDate.setHours(0, 0, 0, 0);
 
     // Обновляем подписку
     user.subscription = {
       isActive: true,
       startDate,
-      endDate,
+      endDate,                
       planDuration: duration // Сохраняем длительность для истории
     };
 
@@ -184,3 +187,58 @@ exports.updateUserSubscription = async (req, res) => {
     });
   }
 };
+  // Отмена подписки
+  exports.unsubscribeUser = async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ message: 'Пользователь не найден' });
+      }
+
+      // Сбрасываем подписку
+      user.subscription = {
+        isActive: false,
+        startDate: null,
+        endDate: null,
+        planDuration: null
+      };
+
+      await user.save();
+
+      res.json({
+        message: 'Подписка успешно отменена',
+        subscription: user.subscription
+      });
+    } catch (err) {
+      res.status(500).json({ 
+        message: 'Ошибка при отмене подписки', 
+        error: err.message 
+      });
+    }
+  };
+exports.avatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'Файл не загружен' });
+    }
+
+    const avatarUrl = `/avatars/${req.file.filename}`;
+
+    // Сохраняем avatar в БД + возвращаем обновлённого user
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { avatar: avatarUrl },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+          
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+
+    res.json({ avatarUrl: updatedUser.avatar });
+  } catch (error) {
+    res.status(500).json({message: 'Ошибка загрузки аватара ', error: error.message });
+  }
+};
+

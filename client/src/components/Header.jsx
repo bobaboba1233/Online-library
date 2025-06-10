@@ -50,8 +50,9 @@ const Header = ({ onSearch, onAuthClick, isLoggedIn, userData }) => {
   };
 
   return (
-    <header className="header">
-      <div className="header__brand" onClick={() => navigate('/')}>
+    <header className="header" style={{ cursor: 'pointer' }}>
+      <div className="header__brand" onClick={() => {
+      window.location.href = '/';}}>
         <img src="/logo-book.png" alt="Логотип" className="header__logo" />
         <h1 className="header__title">Библиотека</h1>
       </div>

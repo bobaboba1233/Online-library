@@ -210,7 +210,7 @@ const AdminPanel = () => {
     }
 
     const response = await axios.put(
-      `http://localhost:5000/api/admin/users/${userId}/subscription`,
+      `http://localhost:5000/api/admin/user/${userId}/subscription`,
       { isActive: !currentStatus },
       {
         headers: {
@@ -326,7 +326,16 @@ const AdminPanel = () => {
                 placeholder="https://example.com/cover.jpg"
               />
             </div>
-
+            <div className="form-group">
+              <label>Описание:</label>
+              <textarea
+                name="description"
+                value={bookFormData.description}
+                onChange={handleBookChange}
+                rows="5"
+                placeholder="Введите описание книги..."
+              />
+            </div>
             <div className="form-row">
               <div className="form-group">
                 <label>Год издания:</label>

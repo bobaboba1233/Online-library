@@ -26,7 +26,9 @@ function BookDetails() {
   }, [id]);
 
   const handleBack = () => navigate(-1);
-  const handleAddToCart = () => alert(`Книга "${book?.title}" добавлена в корзину!`);
+const handleAddToCart = (url) => {
+  window.location.href = "https://yandex.ru/video/preview/7548887151231436014";
+};
 
   if (loading) return <div className="book-loading">Загрузка книги...</div>;
   if (error) return <div className="book-error">Ошибка: {error}</div>;
@@ -52,7 +54,7 @@ function BookDetails() {
               className="add-to-cart-button"
               onClick={handleAddToCart}
             >
-              Добавить в корзину
+              Читать онлайн
             </button>
           )}
         </div>
@@ -100,14 +102,6 @@ function BookDetails() {
       <div className="book-details-section">
         <h3>Характеристики</h3>
         <div className="details-grid">
-          <div className="detail-row">
-            <span className="detail-label">Издательство:</span>
-            <span className="detail-value">{book.publisher || 'Не указано'}</span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">ISBN:</span>
-            <span className="detail-value">{book.isbn || 'Не указан'}</span>
-          </div>
           <div className="detail-row">
             <span className="detail-label">Язык:</span>
             <span className="detail-value">{book.language || 'Русский'}</span>

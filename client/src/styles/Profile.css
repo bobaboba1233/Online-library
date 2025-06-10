@@ -234,4 +234,125 @@
     transform: scale(20, 20);
     opacity: 0;
   }
+}/* Стили для кнопок редактирования */
+.save-btn-field {
+  padding: 5px 12px;
+  margin-left: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #4CAF50;
+  color: white;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.save-btn-field:hover {
+  background-color: #45a049;
+}
+
+.save-btn-field:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+.cancel-btn-field {
+  padding: 5px 12px;
+  margin-left: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f44336;
+  color: white;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.cancel-btn-field:hover {
+  background-color: #d32f2f;
+}
+
+.cancel-btn-field:disabled {
+  background-color: #ef9a9a;
+  cursor: not-allowed;
+}
+
+/* Контейнер для кнопок */
+.edit-actions {
+  display: flex;
+  margin-left: 10px;                
+}
+.edit-btn-field {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px;
+  font-size: 14px;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+.edit-btn-field:hover {
+  background-color: #f0f0f0;
+}
+.profile-avatar {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.avatar-upload-label {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+  font-size: 24px;
+}
+
+.profile-avatar:hover .avatar-overlay {
+  opacity: 1;
+}
+
+.avatar-overlay .uploading-spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 3px solid white;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-avatar img.uploading {
+  opacity: 0.7;
 }

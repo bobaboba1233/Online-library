@@ -9,6 +9,10 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     minlength: 3
   },
+  avatar: { 
+    type: String,
+     default: '' 
+  },
   email: {
     type: String,
     required: [true, 'Email is required'],
@@ -36,6 +40,7 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+  
 });
 
 // Хеширование пароля только при создании или изменении

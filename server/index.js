@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const userRoutes = require('./routes/user');
-
+const userRoutes = require('./routes/userRoutes');
+const path = require('path');
 
 const app = express();
 
@@ -34,11 +34,13 @@ async function connectToDatabase() {
 
 // Запускаем подключение к БД
 connectToDatabase();
-
+// Статическая папка для отдачи аватаров
+app.use('/avatars', express.static(path.join(__dirname, 'uploads/avatars')));
 app.use('/api/books', require('./routes/bookRoutes'));
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/user', userRoutes);
+
 
 // Обработка 404 для API
 app.use('/api/*', (req, res) => {
