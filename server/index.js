@@ -47,6 +47,8 @@ app.use('/api/*', (req, res) => {
   res.status(404).json({ error: 'API endpoint not found' });
 });
 
+module.exports = app;
+
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
