@@ -1,0 +1,243 @@
+/* Основные стили */
+.book-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Шапка */
+.book-header {
+  margin-bottom: 2rem;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #4a6fa5;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #f5f5f5;
+}
+
+.back-arrow {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+/* Основное содержимое */
+.book-content-wrapper {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+.book-cover-section {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.book-main-cover {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.add-to-cart-button {
+  padding: 0.75rem;
+  background-color: #4a6fa5;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-to-cart-button:hover {
+  background-color: #3a5a80;
+}
+
+/* Информация о книге */
+.book-info-section {
+  flex: 1;
+}
+
+.book-title {
+  font-size: 2rem;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.book-author {
+  font-size: 1.25rem;
+  color: #666;
+  margin: 0 0 1.5rem 0;
+  font-weight: normal;
+}
+
+.book-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.meta-divider {
+  color: #ccc;
+}
+
+.book-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.rating-stars {
+  color: #f39c12;
+  font-size: 1.2rem;
+}
+
+.rating-stars.high-rating {
+  color: #27ae60;
+}
+
+.rating-value {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.availability-status {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.availability-status.in-stock {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.availability-status.out-of-stock {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.book-price-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.price {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.notify-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: not-allowed;
+}
+
+.book-description {
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 2rem;
+}
+
+.book-description h3 {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+/* Детали книги */
+.book-details-section {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.book-details-section h3 {
+  font-size: 1.25rem;
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.detail-row {
+  margin-bottom: 0.5rem;
+}
+
+.detail-label {
+  font-weight: bold;
+  color: #555;
+  margin-right: 0.5rem;
+}
+
+.detail-value {
+  color: #333;
+}
+
+/* Состояния */
+.book-loading,
+.book-error,
+.book-not-found {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+}
+
+.book-error {
+  color: #e74c3c;
+}
+
+.book-not-found {
+  color: #666;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .book-content-wrapper {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .book-cover-section {
+    flex: 0 0 auto;
+    align-items: center;
+  }
+  
+  .book-main-cover {
+    max-width: 250px;
+  }
+}
